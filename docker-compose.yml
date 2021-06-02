@@ -1,0 +1,186 @@
+version: "3.9"
+
+networks:
+  vector:
+
+services:
+
+  #### ROUTER STACK 1
+  node1:
+    container_name: node1
+    image: connextproject/vector_node:$VECTOR_VERSION
+    restart: always
+    environment:
+      VECTOR_PROD: "true"
+      VECTOR_PG_HOST: db-node1
+      VECTOR_PG_PORT: 5432
+      VECTOR_PG_DATABASE: vector
+      VECTOR_PG_USERNAME: vector
+      VECTOR_PG_PASSWORD: vector
+      VECTOR_MNEMONIC: $MNEMONIC_1
+    ports:
+      - 8001:8000
+    volumes:
+      - ./config.json:/app/config.json
+    depends_on:
+      - db-node1
+    logging:
+      driver: json-file
+      options:
+          max-size: 10m
+    networks:
+      - vector
+  db-node1:
+    container_name: db-node1
+    image: connextproject/vector_database:$VECTOR_VERSION
+    restart: always
+    environment:
+      VECTOR_PROD: "true"
+      POSTGRES_DB: vector
+      POSTGRES_USER: vector
+      POSTGRES_PASSWORD: vector
+    volumes:
+      - database_node1:/var/lib/postgresql/data
+    logging:
+      driver: json-file
+      options:
+          max-size: 10m
+    networks:
+      - vector
+  router1:
+    container_name: router1
+    image: connextproject/vector_router:$VECTOR_VERSION
+    restart: always
+    environment:
+      VECTOR_PROD: "true"
+      VECTOR_NODE_URL: http://node1:8000
+      VECTOR_PG_HOST: db-router1
+      VECTOR_PG_PORT: 5432
+      VECTOR_PG_DATABASE: vector
+      VECTOR_PG_USERNAME: vector
+      VECTOR_PG_PASSWORD: vector
+    ports:
+      - 9001:8000
+    volumes:
+      - ./config.json:/app/config.json
+    depends_on:
+      - db-router1
+      - node1
+    logging:
+      driver: json-file
+      options:
+          max-size: 10m
+    networks:
+      - vector
+  db-router1:
+    container_name: db-router1
+    image: connextproject/vector_database:$VECTOR_VERSION
+    restart: always
+    environment:
+      VECTOR_PROD: "true"
+      VECTOR_ADMIN_TOKEN: connext1234
+      POSTGRES_DB: vector
+      POSTGRES_USER: vector
+      POSTGRES_PASSWORD: vector
+    volumes:
+      - database_router1:/var/lib/postgresql/data
+    logging:
+      driver: json-file
+      options:
+          max-size: 10m
+    networks:
+      - vector
+  #### END ROUTER STACK 1
+
+  #### ROUTER STACK 2
+  node2:
+    container_name: node2
+    image: connextproject/vector_node:$VECTOR_VERSION
+    restart: always
+    environment:
+      VECTOR_PROD: "true"
+      VECTOR_PG_HOST: db-node2
+      VECTOR_PG_PORT: 5432
+      VECTOR_PG_DATABASE: vector
+      VECTOR_PG_USERNAME: vector
+      VECTOR_PG_PASSWORD: vector
+      VECTOR_MNEMONIC: $MNEMONIC_2
+    ports:
+      - 8002:8000
+    volumes:
+      - ./config.json:/app/config.json
+    depends_on:
+      - db-node2
+    logging:
+      driver: json-file
+      options:
+          max-size: 10m
+    networks:
+      - vector
+  db-node2:
+    container_name: db-node2
+    image: connextproject/vector_database:$VECTOR_VERSION
+    restart: always
+    environment:
+      VECTOR_PROD: "true"
+      POSTGRES_DB: vector
+      POSTGRES_USER: vector
+      POSTGRES_PASSWORD: vector
+    volumes:
+      - database_node2:/var/lib/postgresql/data
+    logging:
+      driver: json-file
+      options:
+          max-size: 10m
+    networks:
+      - vector
+  router2:
+    container_name: router2
+    image: connextproject/vector_router:$VECTOR_VERSION
+    restart: always
+    environment:
+      VECTOR_PROD: "true"
+      VECTOR_NODE_URL: http://node2:8000
+      VECTOR_PG_HOST: db-router2
+      VECTOR_PG_PORT: 5432
+      VECTOR_PG_DATABASE: vector
+      VECTOR_PG_USERNAME: vector
+      VECTOR_PG_PASSWORD: vector
+    ports:
+      - 9002:8000
+    volumes:
+      - ./config.json:/app/config.json
+    depends_on:
+      - db-router2
+      - node2
+    logging:
+      driver: json-file
+      options:
+          max-size: 10m
+    networks:
+      - vector
+  db-router2:
+    container_name: db-router2
+    image: connextproject/vector_database:$VECTOR_VERSION
+    restart: always
+    environment:
+      VECTOR_PROD: "true"
+      VECTOR_ADMIN_TOKEN: connext1234
+      POSTGRES_DB: vector
+      POSTGRES_USER: vector
+      POSTGRES_PASSWORD: vector
+    volumes:
+      - database_router2:/var/lib/postgresql/data
+    logging:
+      driver: json-file
+      options:
+          max-size: 10m
+    networks:
+      - vector
+  #### END ROUTER STACK 2
+
+volumes:
+  database_node1:
+  database_router1:
+  database_node2:
+  database_router2:

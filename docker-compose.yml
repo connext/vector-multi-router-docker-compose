@@ -59,6 +59,7 @@ services:
       VECTOR_PG_DATABASE: vector
       VECTOR_PG_USERNAME: vector
       VECTOR_PG_PASSWORD: vector
+      VECTOR_MNEMONIC: $MNEMONIC_1
     ports:
       - 9001:8000
     volumes:
@@ -146,6 +147,7 @@ services:
       VECTOR_PG_DATABASE: vector
       VECTOR_PG_USERNAME: vector
       VECTOR_PG_PASSWORD: vector
+      VECTOR_MNEMONIC: $MNEMONIC_2
     ports:
       - 9002:8000
     volumes:

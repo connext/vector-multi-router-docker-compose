@@ -4,15 +4,14 @@ networks:
   vector:
 
 services:
-
   #### ROUTER STACK 1
-  node1:
-    container_name: node1
+  router-node1:
+    container_name: router-node1
     image: connextproject/vector_node:$VECTOR_VERSION
     restart: always
     environment:
       VECTOR_PROD: "true"
-      VECTOR_PG_HOST: db-node1
+      VECTOR_PG_HOST: db-router-node1
       VECTOR_PG_PORT: 5432
       VECTOR_PG_DATABASE: vector
       VECTOR_PG_USERNAME: vector
@@ -23,15 +22,15 @@ services:
     volumes:
       - ./config.json:/app/config.json
     depends_on:
-      - db-node1
+      - db-router-node1
     logging:
       driver: json-file
       options:
-          max-size: 10m
+        max-size: 10m
     networks:
       - vector
-  db-node1:
-    container_name: db-node1
+  db-router-node1:
+    container_name: db-router-node1
     image: connextproject/vector_database:$VECTOR_VERSION
     restart: always
     environment:
@@ -40,11 +39,11 @@ services:
       POSTGRES_USER: vector
       POSTGRES_PASSWORD: vector
     volumes:
-      - database_node1:/var/lib/postgresql/data
+      - database_router_node1:/var/lib/postgresql/data
     logging:
       driver: json-file
       options:
-          max-size: 10m
+        max-size: 10m
     networks:
       - vector
   router1:
@@ -53,7 +52,7 @@ services:
     restart: always
     environment:
       VECTOR_PROD: "true"
-      VECTOR_NODE_URL: http://node1:8000
+      VECTOR_NODE_URL: http://router-node1:8000
       VECTOR_PG_HOST: db-router1
       VECTOR_PG_PORT: 5432
       VECTOR_PG_DATABASE: vector
@@ -65,12 +64,12 @@ services:
     volumes:
       - ./config.json:/app/config.json
     depends_on:
-      - db-router1
-      - node1
+      - db-router-node1
+      - router-node1
     logging:
       driver: json-file
       options:
-          max-size: 10m
+        max-size: 10m
     networks:
       - vector
   db-router1:
@@ -88,19 +87,19 @@ services:
     logging:
       driver: json-file
       options:
-          max-size: 10m
+        max-size: 10m
     networks:
       - vector
   #### END ROUTER STACK 1
 
   #### ROUTER STACK 2
-  node2:
-    container_name: node2
+  router-node2:
+    container_name: router-node2
     image: connextproject/vector_node:$VECTOR_VERSION
     restart: always
     environment:
       VECTOR_PROD: "true"
-      VECTOR_PG_HOST: db-node2
+      VECTOR_PG_HOST: db-router-node2
       VECTOR_PG_PORT: 5432
       VECTOR_PG_DATABASE: vector
       VECTOR_PG_USERNAME: vector
@@ -111,15 +110,15 @@ services:
     volumes:
       - ./config.json:/app/config.json
     depends_on:
-      - db-node2
+      - db-router-node2
     logging:
       driver: json-file
       options:
-          max-size: 10m
+        max-size: 10m
     networks:
       - vector
-  db-node2:
-    container_name: db-node2
+  db-router-node2:
+    container_name: db-router-node2
     image: connextproject/vector_database:$VECTOR_VERSION
     restart: always
     environment:
@@ -128,11 +127,11 @@ services:
       POSTGRES_USER: vector
       POSTGRES_PASSWORD: vector
     volumes:
-      - database_node2:/var/lib/postgresql/data
+      - database_router_node2:/var/lib/postgresql/data
     logging:
       driver: json-file
       options:
-          max-size: 10m
+        max-size: 10m
     networks:
       - vector
   router2:
@@ -141,7 +140,7 @@ services:
     restart: always
     environment:
       VECTOR_PROD: "true"
-      VECTOR_NODE_URL: http://node2:8000
+      VECTOR_NODE_URL: http://router-node2:8000
       VECTOR_PG_HOST: db-router2
       VECTOR_PG_PORT: 5432
       VECTOR_PG_DATABASE: vector
@@ -154,11 +153,11 @@ services:
       - ./config.json:/app/config.json
     depends_on:
       - db-router2
-      - node2
+      - router-node2
     logging:
       driver: json-file
       options:
-          max-size: 10m
+        max-size: 10m
     networks:
       - vector
   db-router2:
@@ -176,13 +175,13 @@ services:
     logging:
       driver: json-file
       options:
-          max-size: 10m
+        max-size: 10m
     networks:
       - vector
   #### END ROUTER STACK 2
 
 volumes:
-  database_node1:
+  database_router_node1:
   database_router1:
-  database_node2:
+  database_router_node2:
   database_router2:
